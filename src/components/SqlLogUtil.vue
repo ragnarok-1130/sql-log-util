@@ -46,18 +46,22 @@ export default {
       for (let param of paramsArray) {
         //去除空格
         param = param.trim()
-        const type = param.match(/\(\w+\)$/)[0]
-        const realParam = param.substr(0, param.length - type.length)
-        switch (type.substr(1, type.length - 2).toLowerCase()) {
-          case 'string':
-          case 'date':
-          case 'time':
-          case 'timestamp':
-            sql = sql.replace(/\?/, '\'' + realParam + '\'')
-            break
-          default:
-            sql = sql.replace(/\?/, realParam)
-            break
+        if (param === 'null') {
+          sql = sql.replace(/\?/, param)
+        } else {
+          const type = param.match(/\(\w+\)$/)[0]
+          const realParam = param.substr(0, param.length - type.length)
+          switch (type.substr(1, type.length - 2).toLowerCase()) {
+            case 'string':
+            case 'date':
+            case 'time':
+            case 'timestamp':
+              sql = sql.replace(/\?/, '\'' + realParam + '\'')
+              break
+            default:
+              sql = sql.replace(/\?/, realParam)
+              break
+          }
         }
       }
       console.log(sql)
